@@ -2,9 +2,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { FeeAmount, NonfungiblePositionManager } from '@uniswap/v3-sdk'
+import { FeeAmount, NonfungiblePositionManager, toHex } from '@uniswap/v3-sdk'
 import DowntimeWarning from 'components/DowntimeWarning'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
+import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -203,6 +204,30 @@ export default function AddLiquidity({
   const allowedSlippage = useUserSlippageToleranceWithDefault(
     outOfRange ? ZERO_PERCENT : DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE
   )
+
+  async function printMintData() {
+    if (position) {
+      const { amount0: amount0Desired, amount1: amount1Desired } = position.mintAmounts
+      const minimumAmounts = position.mintAmountsWithSlippage(allowedSlippage)
+      const amount0Min = toHex(minimumAmounts.amount0)
+      const amount1Min = toHex(minimumAmounts.amount1)
+      const info = {
+        token0: position.pool.token0.address,
+        token1: position.pool.token1.address,
+        fee: position.pool.fee,
+        tickLower: position.tickLower,
+        tickUpper: position.tickUpper,
+        amount0Desired: JSBI.BigInt(amount0Desired).toString(),
+        amount1Desired: JSBI.BigInt(amount1Desired).toString(),
+        amount0Min: JSBI.BigInt(amount0Min).toString(),
+        amount1Min: JSBI.BigInt(amount1Min).toString(),
+        recipient: account,
+        deadline: deadline?.toString(),
+        price: JSBI.BigInt(position.pool.sqrtRatioX96).toString(),
+      }
+      console.log(info)
+    }
+  }
 
   async function onAdd() {
     if (!chainId || !library || !account) return
@@ -639,6 +664,15 @@ export default function AddLiquidity({
                       showCommonBases
                       locked={depositBDisabled}
                     />
+                    <ButtonYellow
+                      padding="8px"
+                      marginRight="8px"
+                      $borderRadius="8px"
+                      width="auto"
+                      onClick={() => {
+                        printMintData()
+                      }}
+                    ></ButtonYellow>
                   </AutoColumn>
                 </DynamicSection>
               </div>
