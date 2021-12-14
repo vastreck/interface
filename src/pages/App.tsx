@@ -18,12 +18,11 @@ import Earn from './Earn'
 import Manage from './Earn/Manage'
 import Pool from './Pool'
 import { PositionPage } from './Pool/PositionPage'
+import { RedirectPathToPoolOnly } from './Pool/redirects'
 import PoolV2 from './Pool/v2'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import RemoveLiquidityV3 from './RemoveLiquidity/V3'
-import Swap from './Swap'
-import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -74,13 +73,8 @@ export default function App() {
             <Polling />
             <Suspense fallback={<Loader />}>
               <Switch>
-                <Route exact strict path="/claim" component={OpenClaimAddressModalAndRedirectToSwap} />
                 <Route exact strict path="/uni" component={Earn} />
                 <Route exact strict path="/uni/:currencyIdA/:currencyIdB" component={Manage} />
-
-                <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-                <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-                <Route exact strict path="/swap" component={Swap} />
 
                 <Route exact strict path="/pool/v2/find" component={PoolFinder} />
                 <Route exact strict path="/pool/v2" component={PoolV2} />
@@ -110,7 +104,7 @@ export default function App() {
                 <Route exact strict path="/remove/v2/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                 <Route exact strict path="/remove/:tokenId" component={RemoveLiquidityV3} />
 
-                <Route component={RedirectPathToSwapOnly} />
+                <Route component={RedirectPathToPoolOnly} />
               </Switch>
             </Suspense>
             <Marginer />
