@@ -16,7 +16,7 @@ import { useActiveWeb3React } from '../../hooks/web3'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/unwrappedToken'
-import { ButtonEmpty, ButtonPrimary, ButtonSecondary } from '../Button'
+import { ButtonEmpty, ButtonSecondary } from '../Button'
 import { LightCard } from '../Card'
 import { AutoColumn } from '../Column'
 import CurrencyLogo from '../CurrencyLogo'
@@ -184,15 +184,6 @@ export default function V2PositionCard({ pair, border, stakedBalance }: Position
 
             {userDefaultPoolBalance && JSBI.greaterThan(userDefaultPoolBalance.quotient, BIG_INT_ZERO) && (
               <RowBetween marginTop="10px">
-                <ButtonPrimary
-                  padding="8px"
-                  $borderRadius="8px"
-                  as={Link}
-                  to={`/migrate/v2/${pair.liquidityToken.address}`}
-                  width="64%"
-                >
-                  <Trans>Migrate</Trans>
-                </ButtonPrimary>
                 <ButtonSecondary
                   padding="8px"
                   $borderRadius="8px"
